@@ -2,7 +2,7 @@ import torch
 import matplotlib.pyplot as plt
 import numpy as np
 
-x = torch.arange(-3,3,0.1).view(-1,1) #view resize yapar yani burada 1 sütun x satır yapıyor..
+x = torch.arange(-3,3,0.1).view(-1,1) 
 
 f = -3*x
 
@@ -29,12 +29,13 @@ class LRModel:
     def __init__(self,x,y):
         self.x = x
         self.y = y
-        self.w = torch.tensor(10.0,requires_grad=True)
+        self.w = torch.tensor(-10.0,requires_grad=True)
+        self.b = torch.tensor(-15.0,requires_grad=True)
         self.lr = 0.1
         self.LOSS = []
 
     def forward(self,x):
-        return x * self.w
+        return x * self.w + self.b
     
     def criterion(self,yhat,y): #mse func to evalute the result
         return torch.mean((yhat-y)**2)
@@ -52,8 +53,11 @@ class LRModel:
             #update parameters
             self.w.data = self.w.data - self.lr*self.w.grad.data
 
+            self.b.data = self.b.data - self.lr*self.b.grad.data
+
             #zero the gradients before running the backward pass
             self.w.grad.data.zero_()
+            self.b.grad.data.zero_()
 
     def visualize_loss_function(self):
         plt.plot(self.LOSS)
